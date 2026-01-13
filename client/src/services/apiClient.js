@@ -48,7 +48,7 @@ apiClient.interceptors.response.use(
                     if (refreshToken)
                     {
                         const refreshResponse = await axios.post(
-                            `${API_BASE_URL}/auth/refresh-token`,
+                            `${API_URL}/auth/refresh-token`,
                             { refreshToken },
                             { timeout: 5000 }
                         );
