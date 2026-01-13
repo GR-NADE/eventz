@@ -3,7 +3,9 @@ const dns = require('dns').promises;
 const crypto = require('crypto');
 
 const transporter = nodemailer.createTransport({
-    service: 'gmail',
+    host: 'smtp.gmail.com',
+    port: 587,
+    secure: false,
     auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS
@@ -23,17 +25,17 @@ console.log('[EMAIL] Initializing transporter with config:', {
 transporter.verify((error, success) => {
     if (error)
     {
-        console.error('[EMAIL] Transporter verification FAILED:', {
-            message: error.message,
+        console.error('[EMAIL] SMTP Connection Error Details:', {
             code: error.code,
             command: error.command,
-            stack: error.stack
+            response: error.response,
+            responseCode: error.responseCode
         });
         // console.error('Email transporter error:', error);
     }
     else
     {
-        console.log('[EMAIL] Transporter is ready');
+        console.log('[EMAIL] SMTP Server is ready');
         // console.log('Email server is ready');
     }
 });
