@@ -13,14 +13,28 @@ const transporter = nodemailer.createTransport({
     }
 });
 
+console.log('[EMAIL] Initializing transporter with config:', {
+    service: 'gmail',
+    user: process.env.EMAIL_USER ? 'SET' : 'NOT SET',
+    hasPass: !!process.env.EMAIL_PASS,
+    nodeEnv: process.env.NODE_ENV
+});
+
 transporter.verify((error, success) => {
     if (error)
     {
-        console.error('Email transporter error:', error);
+        console.error('[EMAIL] Transporter verification FAILED:', {
+            message: error.message,
+            code: error.code,
+            command: error.command,
+            stack: error.stack
+        });
+        // console.error('Email transporter error:', error);
     }
     else
     {
-        console.log('Email server is ready');
+        console.log('[EMAIL] Transporter is ready');
+        // console.log('Email server is ready');
     }
 });
 
@@ -64,7 +78,16 @@ const generateVerificationToken = () => {
 };
 
 const sendVerificationEmail = async (email, token, username, appUrl) => {
+    console.log('[EMAIL] sendVerificationEmail called with:', {
+        email,
+        tokenPreview: token.substring(0, 10) + '...',
+        username,
+        appUrl,
+        emailFrom: process.env.EMAIL_FROM
+    });
+
     const verificationUrl = `${appUrl}/verify-email/${token}`;
+    console.log('[EMAIL] Verification URL:', verificationUrl);
 
     const mailOptions = {
         from: process.env.EMAIL_FROM,
@@ -92,13 +115,24 @@ const sendVerificationEmail = async (email, token, username, appUrl) => {
 
     try
     {
+        console.log('[EMAIL] Attempting to send email...');
         const info = await transporter.sendMail(mailOptions);
-        console.log('Email sent successfully:', info.messageId);
+        console.log('[EMAIL] Email sent successfully:', {
+            messageId: info.messageId,
+            response: info.response
+        });
+        // console.log('Email sent successfully:', info.messageId);
         return true;
     }
     catch (error)
     {
-        console.error('Error sending email:', error);
+        // console.error('Error sending email:', error);
+        console.error('[EMAIL] Send mail FAILED:', {
+            message: error.message,
+            code: error.code,
+            command: error.command,
+            stack: error.stack
+        });
         return false;
     }
 };
