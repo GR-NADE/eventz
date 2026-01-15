@@ -121,6 +121,29 @@ app.get('/health', async (req, res) => {
     }
 });
 
+app.get('/api/test-email', async (req, res) => {
+    try
+    {
+        console.log('Testing SMTP connection to:', process.env.EMAIL_USER);
+        await transporter.verify();
+        res.json({ success: true, message: 'SMTP connection successful' });
+    }
+    catch (error)
+    {
+        console.error('SMTP test failed:', error);
+        res.status(500).json({
+            success: false,
+            error: error.message,
+            code: error.code,
+            config: {
+                host: transporter.options.host,
+                port: transporter.options.port,
+                user: process.env.EMAIL_USER ? '***' : 'NOT SET'
+            }
+        });
+    }
+});
+
 app.use((err, req, res, next) => {
     console.error('Unhandled error:', err);
 
