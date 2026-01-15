@@ -39,25 +39,9 @@ const generateTokens = (userId, email) => {
 };
 
 router.post('/register', async (req, res) => {
-    console.log('=== REGISTRATION DEBUG ===');
-    console.log('1. ENV VARIABLES CHECK:', {
-        NODE_ENV: process.env.NODE_ENV,
-        DB_HOST: process.env.DB_HOST,
-        DB_NAME: process.env.DB_NAME,
-        DB_USER: process.env.DB_USER,
-        EMAIL_USER: process.env.EMAIL_USER ? 'SET' : 'MISSING',
-        FRONTEND_URL: process.env.FRONTEND_URL,
-        APP_URL: process.env.APP_URL
-    });
-
-    console.log('[REGISTER] Start - Request body:', req.body);
-    console.log('[REGISTER] Environment:', process.env.NODE_ENV);
-
     const { username, email, password } = req.body;
-    console.log('[REGISTER] Input:', { username, email, passwordLength: password?.length });
 
     const errors = validateInput({ username, email, password }, ['username', 'email', 'password']);
-    console.log('[REGISTER] Validation errors:', errors);
 
     if (Object.keys(errors).length > 0)
     {
@@ -90,64 +74,43 @@ router.post('/register', async (req, res) => {
     try
     {
         const pool = req.app.get('pool');
-        console.log('[REGISTER] Checking existing user...');
 
         const existingUser = await pool.query(
             'SELECT * FROM users WHERE email = $1 OR username = $2',
             [email, username]
         );
-        console.log('[REGISTER] Existing user check:', existingUser.rows.length);
 
         if (existingUser.rows.length > 0)
         {
-            console.log('[REGISTER] User already exists');
             return res.status(400).json({ error: 'Username or email already exists' });
         }
 
-        console.log('[REGISTER] Hashing password...');
-        const saltRounds = 10;
-        const password_hash = await bcrypt.hash(password, saltRounds);
         const verification_token = generateVerificationToken();
         const verification_token_expires = new Date(Date.now() + 24 * 60 * 60 * 1000);
-
-        console.log('[REGISTER] Generated token:', verification_token.substring(0, 10) + '...');
-        console.log('[REGISTER] App URL from env:', process.env.FRONTEND_URL, process.env.APP_URL);
-
         const appUrl = process.env.FRONTEND_URL || process.env.APP_URL;
-        console.log('[REGISTER] Final appUrl:', appUrl);
-
-        console.log('[REGISTER] Attempting to send verification email...');
         const emailSent = await sendVerificationEmail(email, verification_token, username, appUrl);
-        console.log('[REGISTER] Email sent result:', emailSent);
 
         if (!emailSent)
         {
-            console.log('[REGISTER] Email failed to send - but continuing with user creation');
-            // return res.status(400).json({ error: 'Failed to send verification email. Please check your email address and try again.' });
+            return res.status(400).json({ error: 'Failed to send verification email. Please check your email address and try again.' });
         }
 
-        console.log('[REGISTER] Inserting user into database...');
+        const saltRounds = 10;
+        const password_hash = await bcrypt.hash(password, saltRounds);
+
         const result = await pool.query(
             'INSERT INTO users (username, email, password_hash, verification_token, verification_token_expires) VALUES ($1, $2, $3, $4, $5) RETURNING id, username, email, created_at, email_verified',
             [username, email, password_hash, verification_token, verification_token_expires]
         );
-        console.log('[REGISTER] User inserted:', result.rows[0]);
 
         res.status(201).json({
             message: 'Registration successful! Please check your email to verify your account.',
             user: result.rows[0]
         });
-        console.log('[REGISTER] Registration successful - response sent');
     }
     catch (error)
     {
-        console.error('[REGISTER] ERROR DETAILS:', {
-            message: error.message,
-            stack: error.stack,
-            code: error.code,
-            detail: error.detail
-        });
-        // console.error('Registration error:', error);
+        console.error('Registration error:', error);
         res.status(500).json({ error: 'Server error' });
     }
 });

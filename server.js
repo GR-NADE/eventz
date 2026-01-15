@@ -47,15 +47,6 @@ const authLimiter = rateLimit({
 
 app.use(express.json({ limit: '10kb' }));
 
-app.use((req, res, next) => {
-    console.log(`[${new Date().toISOString()}] ${req.method} ${req.path}`, {
-        body: req.body,
-        origin: req.headers.origin,
-        'content-type': req.headers['content-type']
-    });
-    next();
-});
-
 app.use(limiter);
 
 const pool = new Pool({
@@ -69,25 +60,6 @@ const pool = new Pool({
     connectionTimeoutMillis: 2000,
     ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
 });
-
-pool.connect()
-    .then(client => {
-        console.log('[DB] Connected successfully to PostgreSQL');
-        console.log('[DB] Connection details:', {
-            host: process.env.DB_HOST,
-            database: process.env.DB_NAME,
-            user: process.env.DB_USER,
-            ssl: process.env.NODE_ENV === 'production'
-        });
-        client.release();
-    })
-    .catch(err => {
-        console.error('[DB] Connection failed:', {
-            message: err.message,
-            code: err.code,
-            stack: err.stack
-        });
-    });
 
 pool.on('error', (err) => {
     console.error('Unexpected error on idle client', err);
