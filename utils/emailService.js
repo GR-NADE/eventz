@@ -4,12 +4,12 @@ const dns = require('dns').promises;
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 const sendVerificationEmail = async (email, token, username, appUrl) => {
-    const verificationUrl = `${appUrl}/verify-email/${token}`;
+    const verificationUrl = `${appUrl}/api/auth/verify-email/${token}`;
 
     try
     {
         const { data, error } = await resend.emails.send({
-            from: 'Eventz <onboarding@resend.dev>',
+            from: process.env.EMAIL_FROM,
             to: email,
             subject: 'Verify Your Eventz Account',
             html: `
