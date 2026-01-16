@@ -1,4 +1,5 @@
 const { Resend } = require('resend');
+const dns = require('dns').promises;
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
