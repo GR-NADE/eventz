@@ -2,7 +2,8 @@ const express = require('express');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const router = express.Router();
-const { verifyEmailDomain, generateVerificationToken, sendVerificationEmail } = require('../utils/emailService');
+const { verifyEmailDomain, sendVerificationEmail } = require('../utils/emailService');
+const crypto = require('crypto');
 
 const validateInput = (data, fields) => {
     const errors = {};
@@ -37,6 +38,10 @@ const generateTokens = (userId, email) => {
 
     return { accessToken, refreshToken };
 };
+
+const generateVerificationToken = () => {
+    return crypto.randomBytes(32).toString('hex');
+}
 
 router.post('/register', async (req, res) => {
     const { username, email, password } = req.body;
