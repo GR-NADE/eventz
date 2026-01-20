@@ -2,7 +2,7 @@ const express = require('express');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const router = express.Router();
-const { verifyEmailDomain, sendVerificationEmail } = require('../utils/emailService');
+const { sendVerificationEmail } = require('../utils/emailService');
 const crypto = require('crypto');
 
 const validateInput = (data, fields) => {
