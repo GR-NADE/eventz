@@ -6,9 +6,6 @@ const rateLimit = require('express-rate-limit');
 const { Pool } = require('pg');
 
 const app = express();
-
-app.set('trust proxy', 1);
-
 const PORT = process.env.PORT || 5000;
 
 const isDevelopment = process.env.NODE_ENV === 'development';
@@ -49,7 +46,6 @@ const authLimiter = rateLimit({
 });
 
 app.use(express.json({ limit: '10kb' }));
-
 app.use(limiter);
 
 const pool = new Pool({
@@ -92,29 +88,6 @@ app.get('/health', async (req, res) => {
         res.status(503).json({
             status: 'error',
             message: 'Database connection failed'
-        });
-    }
-});
-
-app.get('/api/test-email', async (req, res) => {
-    try
-    {
-        console.log('Testing SMTP connection to:', process.env.EMAIL_USER);
-        await transporter.verify();
-        res.json({ success: true, message: 'SMTP connection successful' });
-    }
-    catch (error)
-    {
-        console.error('SMTP test failed:', error);
-        res.status(500).json({
-            success: false,
-            error: error.message,
-            code: error.code,
-            config: {
-                host: transporter.options.host,
-                port: transporter.options.port,
-                user: process.env.EMAIL_USER ? '***' : 'NOT SET'
-            }
         });
     }
 });
