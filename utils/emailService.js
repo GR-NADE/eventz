@@ -44,13 +44,7 @@ const generateVerificationToken = () => {
 };
 
 const sendVerificationEmail = async (email, token, username, appUrl) => {
-    console.log('sendVerificationEmail called');
-    console.log('Recipient:', email);
-    console.log('Token:', token);
-    console.log('Username:', username);
-    console.log('Using APP URL:', appUrl);
     const verificationUrl = `${appUrl}/verify-email/${token}`;
-    console.log('Verification URL:', verificationUrl);
 
     try
     {
@@ -66,7 +60,7 @@ const sendVerificationEmail = async (email, token, username, appUrl) => {
                     subject: 'Verify Your Eventz Account'
                 }],
                 from: {
-                    email: `<${SENDGRID_FROM_EMAIL}>`,
+                    email: SENDGRID_FROM_EMAIL,
                     name: 'Eventz'
                 },
                 content: [{ 
@@ -99,14 +93,11 @@ const sendVerificationEmail = async (email, token, username, appUrl) => {
             console.error('API error:', response.status, errorText);
             return false;
         }
-        
-        console.log('Email sent successfully');
         return true;
     }
     catch (error)
     {
         console.error('Error sending email:', error);
-        console.error('Error code:', error.code);
         console.error('Error message:', error.message);
         return false;
     }
@@ -127,7 +118,7 @@ const sendGuestInvitationEmail = async (guestEmail, guestName, eventTitle, event
                     subject: `You're Invited: ${eventTitle}`
                 }],
                 from: {
-                    email: `<${SENDGRID_FROM_EMAIL}>`,
+                    email: SENDGRID_FROM_EMAIL,
                     name: 'Eventz'
                 },
                 content: [{ 
@@ -155,11 +146,8 @@ const sendGuestInvitationEmail = async (guestEmail, guestName, eventTitle, event
 
         if (!response.ok)
         {
-            console.error('API error');
             return false;
         }
-
-        console.log('Invitation email sent successfully');
         return true;
     }
     catch (error)

@@ -39,8 +39,6 @@ const generateTokens = (userId, email) => {
 };
 
 router.post('/register', async (req, res) => {
-    console.log('Registration request recieved');
-    console.log('Request body:', req.body);
     const { username, email, password } = req.body;
 
     const errors = validateInput({ username, email, password }, ['username', 'email', 'password']);
@@ -68,17 +66,11 @@ router.post('/register', async (req, res) => {
         return res.status(400).json({ error: passwordError });
     }
 
-    console.log('Input validation passed');
-    console.log('Checking email domain...');
-
     const domainValid = await verifyEmailDomain(email);
     if (!domainValid)
     {
-        console.log('Email domain verification failed:', email);
         return res.status(400).json({ error: 'Email domain does not exist' });
     }
-
-    console.log('Email domain valid');
 
     try
     {
@@ -94,21 +86,15 @@ router.post('/register', async (req, res) => {
             return res.status(400).json({ error: 'Username or email already exists' });
         }
 
-        console.log('Proceeding with registration');
-
         const verification_token = generateVerificationToken();
         const verification_token_expires = new Date(Date.now() + 24 * 60 * 60 * 1000);
-        console.log('Attempting to send verification email...');
         const appUrl = process.env.FRONTEND_URL || process.env.APP_URL;
         const emailSent = await sendVerificationEmail(email, verification_token, username, appUrl);
 
         if (!emailSent)
         {
-            console.log('Failed to send verification email');
             return res.status(400).json({ error: 'Failed to send verification email. Please check your email address and try again.' });
         }
-
-        console.log('Verification email sent successfully \n Inserting user into database...');
 
         const saltRounds = 10;
         const password_hash = await bcrypt.hash(password, saltRounds);
@@ -126,7 +112,6 @@ router.post('/register', async (req, res) => {
     catch (error)
     {
         console.error('Registration error:', error);
-        console.error('Error stack:', error.stack);
         res.status(500).json({ error: 'Server error' });
     }
 });
