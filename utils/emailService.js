@@ -66,7 +66,7 @@ const sendVerificationEmail = async (email, token, username, appUrl) => {
                     subject: 'Verify Your Eventz Account'
                 }],
                 from: {
-                    email: SENDGRID_FROM_EMAIL,
+                    email: `<${SENDGRID_FROM_EMAIL}>`,
                     name: 'Eventz'
                 },
                 content: [{ 
@@ -127,7 +127,7 @@ const sendGuestInvitationEmail = async (guestEmail, guestName, eventTitle, event
                     subject: `You're Invited: ${eventTitle}`
                 }],
                 from: {
-                    email: SENDGRID_FROM_EMAIL,
+                    email: `<${SENDGRID_FROM_EMAIL}>`,
                     name: 'Eventz'
                 },
                 content: [{ 
