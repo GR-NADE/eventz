@@ -44,7 +44,7 @@ const Login = () => {
 
     return (
         <div className = "min-h-screen flex items-center justify-center bg-white">
-            <div className = "w-full max-w-md">
+            <div className = "p-8 w-full max-w-md">
                 <div className = "text-center mb-8">
                     <h1 className = "text-3xl font-bold text-[#007AFF] mb-2">Eventz</h1>
                     <h2 className = "text-2xl font-semibold text-[#3A3A3A]">Welcome Back</h2>
