@@ -223,12 +223,12 @@ const EventDetails = () => {
                 </div>
 
                 <div className = "bg-white rounded-2xl shadow-2xl p-8">
-                    <div className = "flex justify-between items-center mb-6">
+                    <div className = "flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
                         <div>
-                            <h3 className = "text-3xl font-bold text-[#3A3A3A]">Guest List</h3>
+                            <h3 className = "text-2xl sm:text-3xl font-bold text-[#3A3A3A]">Guest List</h3>
                             <p className = "text-[#505050] mt-1">Manage your event attendees</p>
                         </div>
-                        <button onClick = {() => setShowAddGuest(!showAddGuest)} className = "bg-[#007AFF] text-white px-6 py-3 rounded-lg hover:bg-[#0066CC] transition duration-200 shadow-lg hover:shadow-xl font-semibold transform hover:-translate-y-0.5">{showAddGuest ? 'Cancel' : 'Add Guest'}</button>
+                        <button onClick = {() => setShowAddGuest(!showAddGuest)} className = "bg-[#007AFF] text-white px-4 sm:px-6 py-3 rounded-lg hover:bg-[#0066CC] transition duration-200 shadow-lg hover:shadow-xl font-semibold transform hover:-translate-y-0.5 whitespace-nowrap self-start sm:self-auto">{showAddGuest ? 'Cancel' : 'Add Guest'}</button>
                     </div>
 
                     {showAddGuest && (
@@ -264,17 +264,17 @@ const EventDetails = () => {
                                     <div className = "flex flex-col md:flex-row items-start md:items-center gap-3">
                                         <span className = {`px-4 py-2 rounded-full text-sm font-bold border ${getStatusColor(guest.rsvp_status)}`}>{guest.rsvp_status.toUpperCase()}</span>
 
-                                        <div className = "flex gap-2">
+                                        <div className = "flex flex-wrap gap-2">
                                             {guest.rsvp_status !== 'confirmed' && (
-                                                <button onClick = {() => handleUpdateRSVP(guest.id, guest, 'confirmed')} className = "bg-green-500 text-white px-4 py-2 rounded-lg text-sm hover:bg-green-600 transition duration-200 font-semibold shadow-md hover:shadow-lg" title = "Mark as Confirmed">Confirm</button>
+                                                <button onClick = {() => handleUpdateRSVP(guest.id, guest, 'confirmed')} className = "bg-green-500 text-white px-3 py-2 rounded-lg text-sm hover:bg-green-600 transition duration-200 font-semibold shadow-md hover:shadow-lg" title = "Mark as Confirmed">Confirm</button>
                                             )}
                                             {guest.rsvp_status !== 'declined' && (
-                                                <button onClick = {() => handleUpdateRSVP(guest.id, guest, 'declined')} className = "bg-[#FF3333] text-white px-4 py-2 rounded-lg text-sm hover:bg-[#F00E0E] transition duration-200 font-semibold shadow-md hover:shadow-lg" title = "Mark as Declined">Decline</button>
+                                                <button onClick = {() => handleUpdateRSVP(guest.id, guest, 'declined')} className = "bg-[#FF3333] text-white px-3 py-2 rounded-lg text-sm hover:bg-[#F00E0E] transition duration-200 font-semibold shadow-md hover:shadow-lg" title = "Mark as Declined">Decline</button>
                                             )}
                                             {guest.rsvp_status !== 'pending' && (
-                                                <button onClick = {() => handleUpdateRSVP(guest.id, guest, 'pending')} className = "bg-yellow-500 text-white px-4 py-2 rounded-lg text-sm hover:bg-yellow-600 transition duration-200 font-semibold shadow-md hover:shadow-lg" title = "Mark as Pending">?</button>
+                                                <button onClick = {() => handleUpdateRSVP(guest.id, guest, 'pending')} className = "bg-yellow-500 text-white px-3 py-2 rounded-lg text-sm hover:bg-yellow-600 transition duration-200 font-semibold shadow-md hover:shadow-lg" title = "Mark as Pending">?</button>
                                             )}
-                                            <button onClick = {() => handleDeleteGuest(guest.id)} className = "bg-[#505050] text-white px-4 py-2 rounded-lg text-sm hover:bg-[#3A3A3A] transition duration-200 font-semibold shadow-md hover:shadow-lg" title = "Remove Guest">Remove</button>
+                                            <button onClick = {() => handleDeleteGuest(guest.id)} className = "bg-[#505050] text-white px-3 py-2 rounded-lg text-sm hover:bg-[#3A3A3A] transition duration-200 font-semibold shadow-md hover:shadow-lg" title = "Remove Guest">Remove</button>
                                         </div>
                                     </div>
                                 </div>
