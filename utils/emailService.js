@@ -4,13 +4,19 @@ const crypto = require('crypto');
 
 const transporter = nodemailer.createTransport({
     service: 'gmail',
+    host: 'smtp.gmail.com',
+    port: 587,
+    secure: false,
     auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS
     },
     tls: {
         rejectUnauthorized: false
-    }
+    },
+    connectionTimeout: 10000,
+    greetingTimeout: 10000,
+    socketTimeout: 10000
 });
 
 transporter.verify((error,success) => {
@@ -64,7 +70,13 @@ const generateVerificationToken = () => {
 };
 
 const sendVerificationEmail = async (email, token, username, appUrl) => {
+    console.log('sendVerificationEmail called');
+    console.log('Recipient:', email);
+    console.log('Token:', token);
+    console.log('Username:', username);
+    const appUrl = process.env.FRONTEND_URL || process.env.APP_URL;
     const verificationUrl = `${appUrl}/verify-email/${token}`;
+    console.log('Verification URL:', verificationUrl);
 
     const mailOptions = {
         from: process.env.EMAIL_FROM,
@@ -92,13 +104,19 @@ const sendVerificationEmail = async (email, token, username, appUrl) => {
 
     try
     {
+        console.log('Attempting to send email via nodemailer...');
+        console.log('EMAIL_USER:', process.env.EMAIL_USER);
+        console.log('EMAIL_FROM:', process.env.EMAIL_FROM);
         const info = await transporter.sendMail(mailOptions);
         console.log('Email sent successfully:', info.messageId);
+        console.log('Response:', info.response);
         return true;
     }
     catch (error)
     {
-        console.error('Email send failed:', error);
+        console.error('Error sending email:', error);
+        console.error('Error code:', error.code);
+        console.error('Error message:', error.message);
         return false;
     }
 };
