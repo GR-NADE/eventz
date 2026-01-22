@@ -87,7 +87,7 @@ const Register = () => {
     };
 
     return (
-        <div className = "min-h-screen flex items-center justify-center bg-[#F0F0F0] py-12">
+        <div className = "min-h-screen flex items-center justify-center bg-white py-12">
             <div className = "w-full max-w-md">
                 <div className = "text-center mb-8">
                     <h1 className = "text-3xl font-bold text-[#007AFF] mb-2">Eventz</h1>
