@@ -54,12 +54,12 @@ const pool = new Pool({
     database: process.env.DB_NAME,
     password: process.env.DB_PASSWORD,
     port: process.env.DB_PORT,
-    max: 5,
-    idleTimeoutMillis: 10000,
-    connectionTimeoutMillis: 2000,
-    ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
-    statement_timeout: 10000,
-    query_timeout: 10000
+    max: 3,
+    idleTimeoutMillis: 20000,
+    connectionTimeoutMillis: 5000,
+    ssl: {
+        rejectUnauthorized: false
+    }
 });
 
 pool.on('error', (err) => {
