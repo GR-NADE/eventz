@@ -160,7 +160,7 @@ const EventDetails = () => {
                 <div className = "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className = "flex justify-between items-center h-16">
                         <h1 className = "text-2xl font-bold text-[#007AFF]">Eventz</h1>
-                        <button onClick = {() => navigate('/dashboard')} className = "text-[#007AFF] hover:text-[#0066CC] font-semibold hover:underline transition duration-200">← Back to Dashboard</button>
+                        <button onClick = {() => navigate('/dashboard')} className = "text-[#007AFF] hover:text-[#0066CC] font-semibold hover:underline transition duration-200">Back to Dashboard</button>
                     </div>
                 </div>
             </nav>
