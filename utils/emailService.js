@@ -48,6 +48,14 @@ const sendVerificationEmail = async (email, token, username, appUrl) => {
 
     try
     {
+        console.log('=== SENDGRID EMAIL ATTEMPT ===');
+        console.log('Sending to:', email);
+        console.log('From:', SENDGRID_FROM_EMAIL);
+        console.log('API Key exists:', !!SENDGRID_API_KEY);
+        console.log('API Key length:', SENDGRID_API_KEY ? SENDGRID_API_KEY.length : 0);
+        console.log('App URL:', appUrl);
+        console.log('Verification URL:', verificationUrl);
+
         const response = await fetch('https://api.sendgrid.com/v3/mail/send', {
             method: 'POST',
             headers: {
@@ -87,18 +95,41 @@ const sendVerificationEmail = async (email, token, username, appUrl) => {
             })
         });
 
+        console.log('SendGrid Response Status:', response.status);
+        console.log('SendGrid Response OK:', response.ok);
+
         if (!response.ok)
         {
             const errorText = await response.text();
-            console.error('API error:', response.status, errorText);
+            // console.error('API error:', response.status, errorText);
+            console.error('=== SENDGRID ERROR ===');
+            console.error('Status:', response.status);
+            console.error('Status Text:', response.statusText);
+            console.error('Error Response:', errorText);
+
+            try {
+                const errorJson = JSON.parse(errorText);
+                console.error('Parsed Error:', JSON.stringify(errorJson, null, 2));
+            }
+            catch (e)
+            {
+                console.error('Could not parse error as JSON');
+            }
+
+            console.error('=== END SENDGRID ERROR ===');
             return false;
         }
+
+        console.log('=== EMAIL SENT SUCCESSFULLY ===');
         return true;
     }
     catch (error)
     {
+        console.error('=== SENDGRID EXCEPTION ===');
         console.error('Error sending email:', error);
         console.error('Error message:', error.message);
+        console.error('Error stack:', error.stack);
+        console.error('=== END SENDGRID EXCEPTION ===');
         return false;
     }
 };
