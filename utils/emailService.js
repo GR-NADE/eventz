@@ -48,11 +48,6 @@ const sendVerificationEmail = async (email, token, username, appUrl) => {
 
     try
     {
-        console.log('=== RESEND EMAIL ATTEMPT ===');
-        console.log('Sending to:', email);
-        console.log('From:', RESEND_FROM_EMAIL);
-        console.log('API Key exists:', !!RESEND_API_KEY);
-
         const response = await fetch('https://api.resend.com/emails', {
             method: 'POST',
             headers: {
@@ -89,10 +84,7 @@ const sendVerificationEmail = async (email, token, username, appUrl) => {
         if (!response.ok)
         {
             const errorText = await response.text();
-            // console.error('API error:', response.status, errorText);
-            console.error('=== RESEND ERROR ===');
-            console.error('Status:', response.status);
-            console.error('Error Response:', errorText);
+            console.error('API error:', response.status, errorText);
 
             try {
                 const errorJson = JSON.parse(errorText);
@@ -102,22 +94,16 @@ const sendVerificationEmail = async (email, token, username, appUrl) => {
             {
                 console.error('Could not parse error as JSON');
             }
-
-            console.error('=== END RESEND ERROR ===');
             return false;
         }
 
         const result = await response.json();
-        console.log('Email sent successfully. ID:', result.id);
-        console.log('=== EMAIL SENT SUCCESSFULLY ===');
         return true;
     }
     catch (error)
     {
-        console.error('=== RESEND EXCEPTION ===');
         console.error('Error sending email:', error);
         console.error('Error message:', error.message);
-        console.error('=== END RESEND EXCEPTION ===');
         return false;
     }
 };
@@ -165,7 +151,6 @@ const sendGuestInvitationEmail = async (guestEmail, guestName, eventTitle, event
         }
 
         const result = await response.json();
-        console.log('Invitation sent successfully. ID:', result.id);
         return true;
     }
     catch (error)
