@@ -4,6 +4,7 @@ const cors = require('cors');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const { Pool } = require('pg');
+const cleanupUnverifiedUsers = require('./utils/cleanupUnverifiedUsers');
 
 const app = express();
 const PORT = process.env.PORT || 5000;

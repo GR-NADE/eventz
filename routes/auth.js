@@ -87,7 +87,7 @@ router.post('/register', async (req, res) => {
         }
 
         const verification_token = generateVerificationToken();
-        const verification_token_expires = new Date(Date.now() + 24 * 60 * 60 * 1000);
+        const verification_token_expires = new Date(Date.now() + 12 * 60 * 60 * 1000);
         const appUrl = process.env.FRONTEND_URL || process.env.APP_URL;
         const emailSent = await sendVerificationEmail(email, verification_token, username, appUrl);
 
