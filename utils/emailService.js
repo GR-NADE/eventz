@@ -4,6 +4,11 @@ const crypto = require('crypto');
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
 const RESEND_FROM_EMAIL = process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev';
 
+if (process.env.NODE_ENV === 'production' && RESEND_FROM_EMAIL === 'onboarding@resend.dev')
+{
+    console.error('WARNING: Using Resend testing email in production! Set RESEND_FROM_EMAIL environment varaible.');
+}
+
 const verifyEmailDomain = async (email) => {
     try
     {
