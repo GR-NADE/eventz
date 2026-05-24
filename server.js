@@ -69,6 +69,8 @@ pool.on('error', (err) => {
 
 app.set('pool', pool);
 
+cleanupUnverifiedUsers(pool);
+
 const authRoutes = require('./routes/auth');
 const eventRoutes = require('./routes/events');
 const guestRoutes = require('./routes/guests');
