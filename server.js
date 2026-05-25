@@ -4,7 +4,6 @@ const cors = require('cors');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const { Pool } = require('pg');
-const cleanupUnverifiedUsers = require('./utils/cleanupUnverifiedUsers');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -68,8 +67,6 @@ pool.on('error', (err) => {
 });
 
 app.set('pool', pool);
-
-cleanupUnverifiedUsers(pool);
 
 const authRoutes = require('./routes/auth');
 const eventRoutes = require('./routes/events');

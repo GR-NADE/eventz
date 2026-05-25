@@ -83,11 +83,22 @@ router.post('/register', async (req, res) => {
 
         if (existingUser.rows.length > 0)
         {
-            return res.status(400).json({ error: 'Username or email already exists' });
+            const user = existingUser.rows[0];
+
+            if (!user.email_verified && user.verification_token_expires < new Date())
+            {
+                console.log(`Deleting expired unverfied user: ${user.email} (ID: ${user.id})`);
+                await pool.query('DELETE FROM users WHERE id = $1', [user.id]);
+            }
+            else
+            {
+                return res.status(400).json({ error: 'Username or email already exists' });
+            }
         }
 
         const verification_token = generateVerificationToken();
-        const verification_token_expires = new Date(Date.now() + 12 * 60 * 60 * 1000);
+        const verification_token_expires = new Date();
+        verification_token_expires.setUTCHours(verification_token_expires.getUTCHours() + 12);
         const appUrl = process.env.FRONTEND_URL || process.env.APP_URL;
         const emailSent = await sendVerificationEmail(email, verification_token, username, appUrl);
 
